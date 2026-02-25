@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Grand Stand</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%2314532d'/><text x='50' y='65' font-size='44' text-anchor='middle' fill='%23d4a44c' font-family='serif' font-weight='bold'>GS</text></svg>">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <div id="loading-overlay" class="loading-overlay hidden">
+    <div class="spinner"></div>
+  </div>
+
+  <header>
+    <div class="logo-mark">GS</div>
+    <div class="header-text">
+      <h1>The Grand Stand</h1>
+      <p class="subtitle">Pick your field. Chase the slam.</p>
+    </div>
+    <nav class="header-nav">
+      <button class="nav-btn active" data-view="home">Majors</button>
+      <button class="nav-btn" data-view="leaderboard">Scores</button>
+      <button class="nav-btn" data-view="admin">Admin</button>
+    </nav>
+  </header>
+
+  <main id="app">
+    <div class="loading-msg">Loading...</div>
+  </main>
+
+  <!-- Toast -->
+  <div id="toast" class="toast hidden"></div>
+
+  <!-- Modal: Submit Picks -->
+  <div id="modal-submit" class="modal-overlay hidden">
+    <div class="modal">
+      <h2 class="modal-title">Submit Your Picks</h2>
+      <div id="modal-picks-summary" class="picks-summary-list"></div>
+      <div class="modal-field">
+        <label for="picker-name">Your Name</label>
+        <input type="text" id="picker-name" placeholder="First &amp; last name" maxlength="50" autocomplete="off">
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-ghost" id="cancel-submit">Cancel</button>
+        <button class="btn btn-primary" id="confirm-submit">Lock In Picks</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Admin Login -->
+  <div id="modal-admin-login" class="modal-overlay hidden">
+    <div class="modal">
+      <h2 class="modal-title">Admin Access</h2>
+      <div class="modal-field">
+        <label for="admin-password">Password</label>
+        <input type="password" id="admin-password" placeholder="Enter password">
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-ghost" id="cancel-admin-login">Cancel</button>
+        <button class="btn btn-primary" id="confirm-admin-login">Login</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Confirm Action -->
+  <div id="modal-confirm" class="modal-overlay hidden">
+    <div class="modal modal-sm">
+      <h2 class="modal-title" id="confirm-title">Are you sure?</h2>
+      <p id="confirm-msg" class="confirm-msg"></p>
+      <div class="modal-actions">
+        <button class="btn btn-ghost" id="cancel-confirm">Cancel</button>
+        <button class="btn btn-danger" id="ok-confirm">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore-compat.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
