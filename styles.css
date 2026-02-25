@@ -660,3 +660,25 @@ main { max-width: 900px; margin: 0 auto; padding: 1.25rem 1rem 3rem; }
 }
 .btn-google:hover { background: var(--gray-50); box-shadow: var(--shadow); }
 .google-icon { width: 18px; height: 18px; }
+
+/* ===== Auth Modal ===== */
+.btn-block {
+  display: block; width: 100%; justify-content: center; margin-bottom: .25rem;
+}
+.auth-divider {
+  display: flex; align-items: center; gap: .75rem;
+  margin: 1rem 0; color: var(--gray-400); font-size: .82rem;
+}
+.auth-divider::before, .auth-divider::after {
+  content: ''; flex: 1; height: 1px; background: var(--gray-200);
+}
+.auth-footer {
+  display: flex; flex-direction: column; align-items: center;
+  gap: .4rem; margin-top: 1rem;
+}
+.btn-link {
+  background: none; border: none; padding: 0;
+  color: var(--green-dark); font-size: .85rem;
+  cursor: pointer; text-decoration: none;
+}
+.btn-link:hover { text-decoration: underline; }
