@@ -91,6 +91,7 @@ const state = {
   adminAuth: false,
   adminTab: 'tournaments',
   adminTournamentId: null,
+  editingTournamentId: null,
   filterTier: 'all',
   filterSearch: '',
   currentUser: null,
@@ -853,12 +854,17 @@ async function renderAdminView() {
 }
 
 async function adminTabTournaments() {
+  const editing = state.editingTournamentId
+    ? state.tournaments.find(t => t.id === state.editingTournamentId)
+    : null;
+
   const rows = state.tournaments.map(t => {
     const m = MAJOR_META[t.major] || {};
+    const isEditing = t.id === state.editingTournamentId;
     return `
-      <tr>
+      <tr ${isEditing ? 'style="background:var(--gold-light,#fef9ec)"' : ''}>
         <td>${m.icon||''} ${t.name}</td>
-        <td>${t.location||'—'}</td>
+        <td style="font-size:.82rem;color:var(--gray-500)">${t.location||'—'}</td>
         <td>${t.start_date ? fmtDate(t.start_date) : '—'}</td>
         <td><span class="status-badge ${t.status}">${t.status}</span></td>
         <td class="actions-cell">
@@ -866,7 +872,8 @@ async function adminTabTournaments() {
             ${['upcoming','picks_open','active','completed'].map(s =>
               `<option value="${s}" ${t.status===s?'selected':''}>${s}</option>`).join('')}
           </select>
-          <button class="btn btn-sm btn-danger btn-icon" onclick="adminDeleteTournament('${t.id}')">🗑</button>
+          <button class="btn btn-sm btn-ghost btn-icon" onclick="adminStartEditTournament('${t.id}')" title="Edit">✏️</button>
+          <button class="btn btn-sm btn-danger btn-icon" onclick="adminDeleteTournament('${t.id}')" title="Delete">🗑</button>
         </td>
       </tr>`;
   }).join('');
@@ -877,39 +884,57 @@ async function adminTabTournaments() {
         <div class="import-section" style="margin-bottom:1rem">
           <strong>No tournaments yet.</strong>
           <button class="btn btn-gold btn-sm" onclick="seedTournaments()">Seed 2026 Majors</button>
-        </div>` : ''}
+        </div>` : `
+        <div class="import-section" style="margin-bottom:1rem;gap:.5rem">
+          <button class="btn btn-gold btn-sm" onclick="activateAllTournaments()">⚡ Activate All (Picks Open)</button>
+        </div>`}
       <div class="admin-form">
-        <div class="admin-form-title">Add / Edit Tournament</div>
+        <div class="admin-form-title" style="display:flex;align-items:center;justify-content:space-between">
+          <span>${editing ? `✏️ Editing: ${editing.name}` : 'Add Tournament'}</span>
+          ${editing ? `<button class="btn btn-ghost btn-sm" onclick="adminCancelEdit()">Cancel Edit</button>` : ''}
+        </div>
         <div class="form-row" style="margin-bottom:.6rem">
           <div class="form-group">
             <label>Major</label>
             <select id="t-major">
-              <option value="masters">The Masters</option>
-              <option value="pga">PGA Championship</option>
-              <option value="us_open">U.S. Open</option>
-              <option value="open">The Open Championship</option>
+              <option value="masters" ${editing?.major==='masters'?'selected':''}>The Masters</option>
+              <option value="pga"     ${editing?.major==='pga'?'selected':''}>PGA Championship</option>
+              <option value="us_open" ${editing?.major==='us_open'?'selected':''}>U.S. Open</option>
+              <option value="open"    ${editing?.major==='open'?'selected':''}>The Open Championship</option>
             </select>
           </div>
           <div class="form-group">
             <label>Year</label>
-            <input type="number" id="t-year" value="2026" min="2020" max="2040">
+            <input type="number" id="t-year" value="${editing?.year||2026}" min="2020" max="2040">
           </div>
         </div>
         <div class="form-row" style="margin-bottom:.6rem">
           <div class="form-group">
             <label>Location</label>
-            <input type="text" id="t-location" placeholder="Augusta National GC, Augusta, GA">
+            <input type="text" id="t-location" value="${editing?.location||''}" placeholder="Augusta National GC, Augusta, GA">
           </div>
           <div class="form-group">
             <label>ESPN Event ID (optional)</label>
-            <input type="text" id="t-espn-id" placeholder="e.g. 401580351">
+            <input type="text" id="t-espn-id" value="${editing?.espn_event_id||''}" placeholder="e.g. 401580351">
           </div>
         </div>
-        <div class="form-row" style="margin-bottom:.75rem">
-          <div class="form-group"><label>Start Date</label><input type="date" id="t-start"></div>
-          <div class="form-group"><label>End Date</label><input type="date" id="t-end"></div>
+        <div class="form-row" style="margin-bottom:.6rem">
+          <div class="form-group"><label>Start Date</label><input type="date" id="t-start" value="${editing?.start_date||''}"></div>
+          <div class="form-group"><label>End Date</label><input type="date" id="t-end" value="${editing?.end_date||''}"></div>
         </div>
-        <button class="btn btn-primary btn-sm" onclick="adminSaveTournament()">Save Tournament</button>
+        ${editing ? `
+        <div class="form-row" style="margin-bottom:.75rem">
+          <div class="form-group">
+            <label>Status</label>
+            <select id="t-status">
+              ${['upcoming','picks_open','active','completed'].map(s =>
+                `<option value="${s}" ${editing.status===s?'selected':''}>${s}</option>`).join('')}
+            </select>
+          </div>
+        </div>` : ''}
+        <button class="btn btn-primary btn-sm" onclick="adminSaveTournament()">
+          ${editing ? 'Update Tournament' : 'Add Tournament'}
+        </button>
       </div>
       <table class="data-table">
         <thead><tr><th>Tournament</th><th>Location</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead>
@@ -1035,10 +1060,10 @@ async function quickStatus(id, status) {
 
 async function seedTournaments() {
   const SEED = [
-    { name:'The Masters 2026',           major:'masters',  year:2026, location:'Augusta National GC, Augusta, GA',      start_date:'2026-04-09', end_date:'2026-04-12', status:'upcoming' },
-    { name:'PGA Championship 2026',      major:'pga',      year:2026, location:'Quail Hollow Club, Charlotte, NC',       start_date:'2026-05-21', end_date:'2026-05-24', status:'upcoming' },
-    { name:'U.S. Open 2026',             major:'us_open',  year:2026, location:'Shinnecock Hills GC, Southampton, NY',  start_date:'2026-06-18', end_date:'2026-06-21', status:'upcoming' },
-    { name:'The Open Championship 2026', major:'open',     year:2026, location:'Royal Portrush GC, Northern Ireland',   start_date:'2026-07-16', end_date:'2026-07-19', status:'upcoming' },
+    { name:'The Masters 2026',           major:'masters',  year:2026, location:'Augusta National GC, Augusta, GA',      start_date:'2026-04-09', end_date:'2026-04-12', status:'picks_open' },
+    { name:'PGA Championship 2026',      major:'pga',      year:2026, location:'Quail Hollow Club, Charlotte, NC',       start_date:'2026-05-21', end_date:'2026-05-24', status:'picks_open' },
+    { name:'U.S. Open 2026',             major:'us_open',  year:2026, location:'Shinnecock Hills GC, Southampton, NY',  start_date:'2026-06-18', end_date:'2026-06-21', status:'picks_open' },
+    { name:'The Open Championship 2026', major:'open',     year:2026, location:'Royal Portrush GC, Northern Ireland',   start_date:'2026-07-16', end_date:'2026-07-19', status:'picks_open' },
   ];
   setLoading(true);
   try {
@@ -1058,13 +1083,54 @@ async function adminSaveTournament() {
   const espnId   = $('t-espn-id').value.trim();
   const start    = $('t-start').value;
   const end      = $('t-end').value;
+  const statusEl = $('t-status');
   if (!major || !year) { showToast('Major and year required', 'error'); return; }
   const m = MAJOR_META[major];
+  const data = {
+    name: `${m.label} ${year}`,
+    major, year, location,
+    start_date:   start   || null,
+    end_date:     end     || null,
+    espn_event_id: espnId || null,
+  };
+  // When editing, include the id and updated status
+  if (state.editingTournamentId) {
+    data.id     = state.editingTournamentId;
+    data.status = statusEl ? statusEl.value : undefined;
+  }
   setLoading(true);
   try {
-    await saveTournament({ name:`${m.label} ${year}`, major, year, location, start_date:start||null, end_date:end||null, espn_event_id:espnId||null });
+    await saveTournament(data);
+    state.editingTournamentId = null;
     await render();
-    showToast('Tournament saved', 'success');
+    showToast(data.id ? 'Tournament updated ✓' : 'Tournament added ✓', 'success');
+  } catch(e) { showToast(e.message, 'error'); }
+  finally { setLoading(false); }
+}
+
+function adminStartEditTournament(id) {
+  state.editingTournamentId = id;
+  renderAdminView();
+  // Scroll form into view
+  setTimeout(() => document.querySelector('.admin-form')?.scrollIntoView({ behavior:'smooth', block:'start' }), 50);
+}
+
+function adminCancelEdit() {
+  state.editingTournamentId = null;
+  renderAdminView();
+}
+
+async function activateAllTournaments() {
+  if (!confirm('Set all tournaments to "picks_open"?')) return;
+  setLoading(true);
+  try {
+    const batch = db.batch();
+    state.tournaments.forEach(t => {
+      batch.update(db.collection('tournaments').doc(t.id), { status: 'picks_open' });
+    });
+    await batch.commit();
+    await render();
+    showToast('All tournaments set to picks_open ✓', 'success');
   } catch(e) { showToast(e.message, 'error'); }
   finally { setLoading(false); }
 }
