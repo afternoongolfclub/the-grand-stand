@@ -4,12 +4,12 @@
 
 // ─── CONFIG ──────────────────────────────────────────────────────
 const FIREBASE_CONFIG = {
-  apiKey:            'YOUR_API_KEY',             // ← replace
-  authDomain:        'YOUR_PROJECT.firebaseapp.com',
-  projectId:         'YOUR_PROJECT_ID',
-  storageBucket:     'YOUR_PROJECT.appspot.com',
-  messagingSenderId: 'YOUR_SENDER_ID',
-  appId:             'YOUR_APP_ID',
+  apiKey:            'AIzaSyCPXaN4rH0180t0kBoXD6jx3Zns59r6EyA',
+  authDomain:        'the-grand-stand.firebaseapp.com',
+  projectId:         'the-grand-stand',
+  storageBucket:     'the-grand-stand.firebasestorage.app',
+  messagingSenderId: '808564702299',
+  appId:             '1:808564702299:web:e494000f0d256f8a6f137e',
 };
 const ADMIN_PASSWORD = 'majors2026'; // ← change!
 const SALARY_CAP     = 100;
