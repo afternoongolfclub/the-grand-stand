@@ -20,5 +20,11 @@ service cloud.firestore {
     match /players/{id} {
       allow write: if true;
     }
+
+    // User profiles - users can read/write their own profile
+    match /users/{userId} {
+      allow read: if true;
+      allow write: if true;
+    }
   }
 }

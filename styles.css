@@ -525,3 +525,135 @@ main { max-width: 900px; margin: 0 auto; padding: 1.25rem 1rem 3rem; }
   .majors-grid { grid-template-columns: 1fr 1fr; }
   .leaderboard-table th, .leaderboard-table td { padding: .55rem .6rem; }
 }
+
+/* ===== Header Auth ===== */
+.header-auth { margin-left: auto; flex-shrink: 0; }
+
+.user-menu { position: relative; display: flex; align-items: center; gap: .5rem; cursor: pointer; }
+.user-avatar-sm {
+  width: 34px; height: 34px; border-radius: 50%;
+  object-fit: cover; border: 2px solid var(--gold); flex-shrink: 0;
+}
+.user-initials-sm {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: var(--gold); color: var(--green-dark);
+  display: flex; align-items: center; justify-content: center;
+  font-size: .75rem; font-weight: 700; flex-shrink: 0;
+  border: 2px solid rgba(255,255,255,.3);
+}
+.user-name-sm { color: var(--white); font-size: .82rem; font-weight: 600; max-width: 80px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.user-dropdown {
+  display: none; position: absolute; top: calc(100% + .5rem); right: 0;
+  background: var(--white); border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-lg); min-width: 160px; z-index: 200;
+  overflow: hidden; border: 1px solid var(--gray-200);
+}
+.user-menu:hover .user-dropdown,
+.user-menu.open .user-dropdown { display: block; }
+.user-dropdown button {
+  display: block; width: 100%; text-align: left;
+  padding: .65rem 1rem; font-size: .85rem; font-family: var(--font);
+  background: none; border: none; cursor: pointer; color: var(--gray-700);
+  border-bottom: 1px solid var(--gray-100);
+}
+.user-dropdown button:last-child { border-bottom: none; }
+.user-dropdown button:hover { background: var(--gray-50); color: var(--green-dark); }
+
+/* ===== Profile Modal ===== */
+.profile-avatar-row {
+  display: flex; align-items: center; gap: .75rem; margin-bottom: 1rem;
+  padding: .75rem; background: var(--gray-50); border-radius: var(--radius-sm);
+}
+.profile-avatar-lg {
+  width: 52px; height: 52px; border-radius: 50%; object-fit: cover;
+  border: 3px solid var(--gold);
+}
+.profile-initials-lg {
+  width: 52px; height: 52px; border-radius: 50%;
+  background: var(--green-dark); color: var(--white);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem; font-weight: 700; border: 3px solid var(--gold);
+}
+.profile-info-sm { font-size: .82rem; color: var(--gray-500); }
+.profile-info-sm strong { display: block; color: var(--gray-900); font-size: .9rem; margin-bottom: .1rem; }
+
+/* ===== Money Page ===== */
+.money-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+@media (max-width: 640px) { .money-grid { grid-template-columns: 1fr; } }
+
+.season-table { width: 100%; border-collapse: collapse; font-size: .88rem; }
+.season-table th {
+  text-align: left; padding: .6rem 1rem; background: var(--gray-50);
+  border-bottom: 2px solid var(--gray-200); font-size: .75rem; color: var(--gray-500);
+  text-transform: uppercase; letter-spacing: .05em; font-weight: 600;
+}
+.season-table td { padding: .7rem 1rem; border-bottom: 1px solid var(--gray-100); vertical-align: middle; }
+.season-table tr:hover td { background: var(--gray-50); }
+.season-rank { font-weight: 700; color: var(--green-dark); width: 44px; font-size: 1rem; }
+.season-pts  { font-weight: 700; color: var(--green-dark); text-align: right; white-space: nowrap; }
+.season-breakdown { font-size: .75rem; color: var(--gray-400); margin-top: .15rem; }
+.season-name { font-weight: 600; }
+
+.payment-card {
+  background: var(--white); border-radius: var(--radius);
+  box-shadow: var(--shadow); padding: 1rem 1.25rem;
+  display: flex; flex-direction: column; gap: .6rem;
+}
+.payment-card-header { display: flex; align-items: center; gap: .65rem; }
+.payment-user-avatar {
+  width: 38px; height: 38px; border-radius: 50%; object-fit: cover;
+  border: 2px solid var(--gray-200); flex-shrink: 0;
+}
+.payment-user-initials {
+  width: 38px; height: 38px; border-radius: 50%;
+  background: var(--green-dark); color: var(--white);
+  display: flex; align-items: center; justify-content: center;
+  font-size: .8rem; font-weight: 700; flex-shrink: 0;
+}
+.payment-name { font-weight: 700; font-size: .95rem; }
+.payment-links { display: flex; gap: .5rem; flex-wrap: wrap; }
+.btn-venmo { background: #3D95CE; color: var(--white); }
+.btn-venmo:hover { background: #2d7ab8; }
+.btn-paypal { background: #003087; color: var(--white); }
+.btn-paypal:hover { background: #002575; }
+.no-payment { font-size: .8rem; color: var(--gray-400); font-style: italic; }
+
+.payment-cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: .75rem; }
+
+/* ===== My Picks Page ===== */
+.my-picks-tournament { margin-bottom: 1.5rem; }
+.my-picks-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: .6rem; flex-wrap: wrap; gap: .5rem;
+}
+.my-picks-name { font-family: var(--font-display); font-size: 1.1rem; color: var(--green-dark); }
+.my-picks-score { font-weight: 700; font-size: 1.1rem; }
+.my-picks-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: .5rem; }
+.my-pick-card {
+  background: var(--white); border: 1.5px solid var(--gray-200);
+  border-radius: var(--radius-sm); padding: .65rem .8rem;
+  font-size: .84rem;
+}
+.my-pick-card.placed { border-color: var(--green-mid); background: var(--green-pale); }
+.my-pick-card.mc { border-color: #fca5a5; background: #fef2f2; }
+.my-pick-player { font-weight: 600; margin-bottom: .2rem; }
+.my-pick-meta { display: flex; justify-content: space-between; color: var(--gray-500); font-size: .76rem; }
+.my-pick-pts { color: var(--green-accent); font-weight: 700; }
+
+.sign-in-prompt {
+  text-align: center; padding: 4rem 1rem;
+}
+.sign-in-prompt .icon { font-size: 3rem; display: block; margin-bottom: .75rem; }
+.sign-in-prompt p { color: var(--gray-500); margin-bottom: 1.25rem; font-size: .95rem; }
+.sign-in-prompt h2 { font-family: var(--font-display); font-size: 1.6rem; color: var(--green-dark); margin-bottom: .5rem; }
+
+/* ===== Google Sign In button ===== */
+.btn-google {
+  background: var(--white); color: var(--gray-700);
+  border: 1.5px solid var(--gray-300);
+  display: inline-flex; align-items: center; gap: .5rem;
+  font-size: .9rem;
+}
+.btn-google:hover { background: var(--gray-50); box-shadow: var(--shadow); }
+.google-icon { width: 18px; height: 18px; }

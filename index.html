@@ -25,15 +25,18 @@
     <nav class="header-nav">
       <button class="nav-btn active" data-view="home">Majors</button>
       <button class="nav-btn" data-view="leaderboard">Scores</button>
+      <button class="nav-btn" data-view="money">Money</button>
       <button class="nav-btn" data-view="admin">Admin</button>
     </nav>
+    <div class="header-auth" id="header-auth">
+      <button class="btn btn-gold btn-sm" onclick="signIn()">Sign In</button>
+    </div>
   </header>
 
   <main id="app">
     <div class="loading-msg">Loading...</div>
   </main>
 
-  <!-- Toast -->
   <div id="toast" class="toast hidden"></div>
 
   <!-- Modal: Submit Picks -->
@@ -41,7 +44,7 @@
     <div class="modal">
       <h2 class="modal-title">Submit Your Picks</h2>
       <div id="modal-picks-summary" class="picks-summary-list"></div>
-      <div class="modal-field">
+      <div class="modal-field" id="name-field-wrap">
         <label for="picker-name">Your Name</label>
         <input type="text" id="picker-name" placeholder="First &amp; last name" maxlength="50" autocomplete="off">
       </div>
@@ -79,7 +82,34 @@
     </div>
   </div>
 
+  <!-- Modal: User Profile -->
+  <div id="modal-profile" class="modal-overlay hidden">
+    <div class="modal">
+      <h2 class="modal-title">Your Profile</h2>
+      <div id="profile-avatar-row" class="profile-avatar-row"></div>
+      <div class="modal-field">
+        <label for="profile-name">Display Name</label>
+        <input type="text" id="profile-name" placeholder="Your full name" maxlength="50">
+      </div>
+      <div class="modal-field">
+        <label for="profile-venmo">Venmo Username</label>
+        <input type="text" id="profile-venmo" placeholder="@username (no @)">
+        <p class="form-hint">Others can pay you at venmo.com/u/username</p>
+      </div>
+      <div class="modal-field">
+        <label for="profile-paypal">PayPal.me Username</label>
+        <input type="text" id="profile-paypal" placeholder="username">
+        <p class="form-hint">Others can pay you at paypal.me/username</p>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-ghost" id="cancel-profile">Cancel</button>
+        <button class="btn btn-primary" id="save-profile">Save Profile</button>
+      </div>
+    </div>
+  </div>
+
   <script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore-compat.js"></script>
   <script src="app.js"></script>
 </body>
