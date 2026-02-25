@@ -11,9 +11,14 @@ const FIREBASE_CONFIG = {
   messagingSenderId: '808564702299',
   appId:             '1:808564702299:web:e494000f0d256f8a6f137e',
 };
-const ADMIN_PASSWORD = 'majors2026'; // ← change!
-const SALARY_CAP     = 100;
-const MAX_PICKS      = 5;
+const ADMIN_PASSWORD   = 'majors2026'; // ← change!
+const SALARY_CAP       = 100;
+const MAX_PICKS        = 5;
+const COMMISSIONER     = {
+  name:   'Rudy',
+  venmo:  'rudygiljr',
+  paypal: 'rudygiljr@gmail.com',
+};
 
 // ─── MAJOR META ──────────────────────────────────────────────────
 const MAJOR_META = {
@@ -674,36 +679,11 @@ async function renderMoneyPage() {
       </tr>`;
   }).join('');
 
-  // Payment cards — only users with venmo or paypal
-  const paymentCards = users
-    .filter(u => u.venmo || u.paypal)
-    .map(u => {
-      const photo = u.photoURL;
-      const name  = u.displayName || 'Player';
-      const avatar = photo
-        ? `<img class="payment-user-avatar" src="${photo}" alt="${name}">`
-        : `<div class="payment-user-initials">${initials(name)}</div>`;
-      const links = [
-        u.venmo  ? `<a href="https://venmo.com/u/${u.venmo}" target="_blank" class="btn btn-sm btn-venmo">Venmo @${u.venmo}</a>` : '',
-        u.paypal ? `<a href="https://paypal.me/${u.paypal}" target="_blank" class="btn btn-sm btn-paypal">PayPal.me/${u.paypal}</a>` : '',
-      ].filter(Boolean).join('');
-      return `
-        <div class="payment-card">
-          <div class="payment-card-header">
-            ${avatar}
-            <span class="payment-name">${name}</span>
-          </div>
-          <div class="payment-links">${links}</div>
-        </div>`;
-    }).join('');
-
-  const noPaymentUsers = !users.some(u => u.venmo || u.paypal);
-
   app().innerHTML = `
     <div class="section-row" style="margin-bottom:1rem">
       <div>
         <h2 class="section-title">Money</h2>
-        <p class="section-sub">Season standings and payment links</p>
+        <p class="section-sub">Season standings and how to pay up</p>
       </div>
     </div>
 
@@ -718,18 +698,21 @@ async function renderMoneyPage() {
     </div>
 
     <div>
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;flex-wrap:wrap;gap:.5rem">
-        <h3 style="font-family:var(--font-display);font-size:1.15rem;color:var(--green-dark)">Pay Up</h3>
-        ${state.currentUser
-          ? `<button class="btn btn-ghost btn-sm" onclick="openProfileModal()">+ Add your payment info</button>`
-          : `<button class="btn btn-google btn-sm" onclick="signIn()">
-              <svg class="google-icon" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-              Sign in to add yours
-             </button>`}
+      <h3 style="font-family:var(--font-display);font-size:1.15rem;color:var(--green-dark);margin-bottom:.75rem">Pay Up 💸</h3>
+      <div class="commissioner-card">
+        <div class="commissioner-label">Send payment to the commissioner</div>
+        <div class="commissioner-name">${COMMISSIONER.name}</div>
+        <div class="commissioner-links">
+          <a href="https://venmo.com/u/${COMMISSIONER.venmo}" target="_blank" class="btn btn-venmo">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0"><path d="M19.5 2c.9 1.5 1.3 3.1 1.3 5.1 0 5.3-4.5 12.2-8.2 17H5.4L2 4.1l7.1-.7 1.7 13.6c1.6-2.6 3.5-6.7 3.5-9.5 0-1.5-.3-2.6-.7-3.5L19.5 2z"/></svg>
+            @${COMMISSIONER.venmo}
+          </a>
+          <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=${encodeURIComponent(COMMISSIONER.paypal)}&currency_code=USD" target="_blank" class="btn btn-paypal">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0"><path d="M20.067 8.478c.492.315.844.825.983 1.43C21.692 12.976 20 15 17.05 15H15.5l-.734 4.656A.75.75 0 0 1 14.02 20H11.1a.5.5 0 0 1-.494-.574l.734-4.656H9.5a.5.5 0 0 1-.494-.574l1.5-9.5A.75.75 0 0 1 11.25 4h5.3c1.37 0 2.55.593 3.194 1.595l.323.883z"/></svg>
+            ${COMMISSIONER.paypal}
+          </a>
+        </div>
       </div>
-      ${noPaymentUsers
-        ? `<div class="empty-state" style="padding:1.5rem"><span class="icon">💸</span>No payment links added yet.<br><small style="color:var(--gray-400)">Sign in and edit your profile to add Venmo or PayPal.</small></div>`
-        : `<div class="payment-cards-grid">${paymentCards}</div>`}
     </div>`;
 }
 
